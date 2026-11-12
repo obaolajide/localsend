@@ -229,6 +229,23 @@ sealed class RsServerEvent with _$RsServerEvent {
     required String sessionId,
   }) = RsServerEvent_CancelReceived;
 
+  /// A text chat message was received via `POST /api/localsend/v2/chat`.
+  ///
+  /// Only emitted on TLS. `cert_fingerprint` is the SHA-256 fingerprint
+  /// (uppercase hex) of the sender's client certificate verified during the
+  /// mTLS handshake, so it cannot be spoofed.
+  const factory RsServerEvent.chatReceived({
+    required String ip,
+    required String certFingerprint,
+
+    /// Sender-generated message ID, used to ignore duplicates.
+    required String id,
+
+    /// The sender's ISO 8601 UTC timestamp. Informational only.
+    required String timestamp,
+    required String content,
+  }) = RsServerEvent_ChatReceived;
+
   /// A web client requests to download the shared files via `POST /api/localsend/v2/prepare-download`.
   ///
   /// Must be answered with [RsHttpServer::respond_prepare_download].

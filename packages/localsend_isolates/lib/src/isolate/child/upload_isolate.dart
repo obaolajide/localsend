@@ -63,12 +63,27 @@ class HttpUploadCancelTask implements BaseHttpUploadTask {
   HttpUploadCancelTask({required this.taskId});
 }
 
+class HttpChatSendTask implements BaseHttpUploadTask {
+  final Device device;
+  final String messageId;
+  final String timestamp;
+  final String content;
+
+  HttpChatSendTask({required this.device, required this.messageId, required this.timestamp, required this.content});
+}
+
 /// A message sent from the upload isolate to the main isolate
 /// reporting the state of a single file of a [HttpUploadFilesTask].
 sealed class HttpUploadEvent {
   final String fileId;
 
   HttpUploadEvent({required this.fileId});
+}
+
+class HttpChatSentEvent extends HttpUploadEvent {
+  final String? error;
+
+  HttpChatSentEvent({required String messageId, this.error}) : super(fileId: messageId);
 }
 
 /// The upload of the file has started.
@@ -128,6 +143,37 @@ Future<void> setupHttpUploadIsolate(
         case HttpUploadFilesTask task:
           uploadTask = task;
           break;
+        case HttpChatSendTask chatTask:
+          try {
+            final channel = chatTask.device.channels.whereType<HttpChannel>().firstWhere((channel) => channel.https);
+            final client = ref.read(httpProvider).pinnedTo(chatTask.device.fingerprint, timeoutMs: 10000);
+            await client.sendChat(
+              ip: channel.host,
+              port: channel.port,
+              id: chatTask.messageId,
+              timestamp: chatTask.timestamp,
+              content: chatTask.content,
+            );
+            sendToMain(
+              IsolateTaskStreamResult.event(
+                id: task.id,
+                data: HttpChatSentEvent(messageId: chatTask.messageId),
+              ),
+            );
+          } catch (e) {
+            final error = e is RsHttpClientError_StatusCode && e.status == 404
+                ? 'This device does not support chat yet. Install the chat-enabled LocalSend build on it.'
+                : e.humanErrorMessage;
+            sendToMain(
+              IsolateTaskStreamResult.event(
+                id: task.id,
+                data: HttpChatSentEvent(messageId: chatTask.messageId, error: error),
+              ),
+            );
+          } finally {
+            sendToMain(IsolateTaskStreamResult.done(id: task.id));
+          }
+          return;
         case HttpUploadCancelTask task:
           final cancelToken = ref.read(_cancelTokenProvider)[task.taskId];
           cancelToken?.cancel();

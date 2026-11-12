@@ -165,6 +165,25 @@ pub struct InfoResponseDtoV2 {
     pub download: bool,
 }
 
+/// Chat message DTO for v2.2 protocol.
+///
+/// Sent to POST /api/localsend/v2/chat. Only text messages cross the wire:
+/// file messages reference a local path and are created locally by each
+/// device when a transfer finishes.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ChatMessageDtoV2 {
+    /// Sender-generated message ID (UUID). Lets the receiver ignore duplicates.
+    pub id: String,
+
+    /// ISO 8601 UTC timestamp of the sender. Informational only: the receiver
+    /// should order messages by its own receive time.
+    pub timestamp: String,
+
+    /// The message text.
+    pub content: String,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

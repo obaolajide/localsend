@@ -117,6 +117,7 @@ async fn start_test_server_with_verification(
                     }
                     ServerEventV2::PrepareUploadAborted { .. } => {}
                     ServerEventV2::CancelReceived { .. } => {}
+                    ServerEventV2::ChatReceived { .. } => {}
                     ServerEventV2::ListenerFailed { .. } => {}
                 }
             }

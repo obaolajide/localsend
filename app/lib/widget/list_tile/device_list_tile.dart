@@ -17,6 +17,7 @@ class DeviceListTile extends StatelessWidget {
   final double? progress;
   final VoidCallback? onTap;
   final VoidCallback? onDetailsTap;
+  final VoidCallback? onChatTap;
 
   const DeviceListTile({
     required this.device,
@@ -26,6 +27,7 @@ class DeviceListTile extends StatelessWidget {
     this.progress,
     this.onTap,
     this.onDetailsTap,
+    this.onChatTap,
   });
 
   @override
@@ -43,12 +45,21 @@ class DeviceListTile extends StatelessWidget {
           ],
         ],
       ),
-      trailing: onDetailsTap != null
-          ? IconButton(
-              icon: const Icon(Icons.info_outline),
-              onPressed: onDetailsTap,
-            )
-          : null,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (onChatTap != null)
+            Tooltip(
+              message: device.channels.whereType<HttpChannel>().any((channel) => channel.https) ? 'Open chat' : 'Chat requires encryption',
+              child: TextButton.icon(
+                icon: const Icon(Icons.chat_bubble_outline),
+                label: const Text('Chat'),
+                onPressed: device.channels.whereType<HttpChannel>().any((channel) => channel.https) ? onChatTap : null,
+              ),
+            ),
+          if (onDetailsTap != null) IconButton(icon: const Icon(Icons.info_outline), onPressed: onDetailsTap),
+        ],
+      ),
       subTitle: Wrap(
         runSpacing: 10,
         spacing: 10,

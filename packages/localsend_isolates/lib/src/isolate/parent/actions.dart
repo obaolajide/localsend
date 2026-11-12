@@ -267,6 +267,31 @@ class IsolateHttpUploadFilesAction extends ReduxActionWithResult<IsolateControll
   }
 }
 
+/// Sends one chat message through the existing HTTP upload isolate.
+class IsolateHttpChatSendAction extends ReduxActionWithResult<IsolateController, ParentIsolateState, Stream<HttpUploadEvent>> {
+  final Device device;
+  final String messageId;
+  final String timestamp;
+  final String content;
+
+  IsolateHttpChatSendAction({required this.device, required this.messageId, required this.timestamp, required this.content});
+
+  @override
+  (ParentIsolateState, Stream<HttpUploadEvent>) reduce() {
+    final connection = state.httpUpload;
+    if (connection == null) {
+      throw StateError('httpUpload is not initialized');
+    }
+    return (
+      state,
+      connection.sendWrappedTaskAndListenStream(
+        task: HttpChatSendTask(device: device, messageId: messageId, timestamp: timestamp, content: content),
+        taskId: IdProvider.instance.getNextId(),
+      ),
+    );
+  }
+}
+
 class IsolateHttpUploadCancelAction extends ReduxAction<IsolateController, ParentIsolateState> {
   final int taskId;
 

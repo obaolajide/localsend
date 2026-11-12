@@ -9,6 +9,7 @@ import 'package:localsend_app/pages/home_page.dart';
 import 'package:localsend_app/pages/home_page_controller.dart';
 import 'package:localsend_app/pages/progress_page.dart';
 import 'package:localsend_app/pages/send_page.dart';
+import 'package:localsend_app/provider/chat_provider.dart';
 import 'package:localsend_app/provider/device_info_provider.dart';
 import 'package:localsend_app/provider/file_transfer_provider.dart';
 import 'package:localsend_app/provider/http_provider.dart';
@@ -663,6 +664,21 @@ class SendNotifier extends Notifier<Map<String, SendSessionState>> {
                 );
             _updateForegroundServiceProgress(sessionId);
             ref.notifier(fileTransferProvider).setStatus(sessionId: sessionId, fileId: event.fileId, status: FileStatus.finished);
+            final path = state[sessionId]?.files[event.fileId]?.path;
+            if (path != null && path.isNotEmpty) {
+              try {
+                await ref
+                    .notifier(chatProvider)
+                    .addFileMessage(
+                      sessionState.target.fingerprint,
+                      path,
+                      isSender: true,
+                      messageId: 'file:$sessionId:${event.fileId}',
+                    );
+              } catch (e, st) {
+                _logger.warning('Could not save sent file in chat history', e, st);
+              }
+            }
           case HttpUploadFileFailedEvent():
             _logger.warning('Error while sending file ${state[sessionId]?.files[event.fileId]?.file.fileName}: ${event.error}');
             ref.notifier(fileTransferProvider).setStatus(sessionId: sessionId, fileId: event.fileId, status: FileStatus.failed);
@@ -670,6 +686,9 @@ class SendNotifier extends Notifier<Map<String, SendSessionState>> {
               sessionId: sessionId,
               state: (s) => s?.withFileError(event.fileId, event.error),
             );
+          case HttpChatSentEvent():
+            // Chat tasks use this isolate but never belong to a file session.
+            break;
         }
       }
     } catch (e, st) {

@@ -166,6 +166,16 @@ class HttpServerFailFileDownloadTask implements BaseHttpServerTask {
 /// A message sent from the server isolate to the main isolate.
 sealed class HttpServerEvent {}
 
+class HttpServerChatReceivedEvent extends HttpServerEvent {
+  final String ip;
+  final String certFingerprint;
+  final String id;
+  final String timestamp;
+  final String content;
+
+  HttpServerChatReceivedEvent({required this.ip, required this.certFingerprint, required this.id, required this.timestamp, required this.content});
+}
+
 /// The server has been started and is listening.
 /// Always the first event emitted by a [HttpServerStartTask].
 class HttpServerStartedEvent extends HttpServerEvent {}
@@ -540,6 +550,8 @@ Future<void> setupHttpServerIsolate(
                       file: file,
                     ),
                   );
+                case RsServerEvent_ChatReceived(:final ip, :final certFingerprint, :final id, :final timestamp, :final content):
+                  emit(HttpServerChatReceivedEvent(ip: ip, certFingerprint: certFingerprint, id: id, timestamp: timestamp, content: content));
                 case RsServerEvent_Show(:final args):
                   emit(HttpServerShowEvent(args: args));
                 case RsServerEvent_ListenerFailed(:final error):

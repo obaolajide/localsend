@@ -9,6 +9,7 @@ import 'package:localsend_app/pages/home_page.dart';
 import 'package:localsend_app/pages/home_page_controller.dart';
 import 'package:localsend_app/pages/progress_page.dart';
 import 'package:localsend_app/pages/receive_page.dart';
+import 'package:localsend_app/provider/chat_provider.dart';
 import 'package:localsend_app/provider/device_info_provider.dart';
 import 'package:localsend_app/provider/favorites_provider.dart';
 import 'package:localsend_app/provider/file_transfer_provider.dart';
@@ -366,6 +367,20 @@ class ReceiveController {
               timestamp: DateTime.now().toUtc(),
             ),
           );
+      if (filePath != null && filePath.isNotEmpty) {
+        try {
+          await server.ref
+              .notifier(chatProvider)
+              .addFileMessage(
+                receiveState.sender.fingerprint,
+                filePath,
+                isSender: false,
+                messageId: 'file:${event.sessionId}:$fileId',
+              );
+        } catch (e, st) {
+          _logger.warning('Could not save received file in chat history', e, st);
+        }
+      }
     } else {
       server.ref.notifier(fileTransferProvider).setStatus(sessionId: event.sessionId, fileId: fileId, status: FileStatus.failed);
       server.setState(

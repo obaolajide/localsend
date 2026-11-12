@@ -1,7 +1,7 @@
 use super::{ClientError, ResponseExt, ResultWithPublicKey};
 use crate::http::client::url::{ApiVersion, TargetUrl};
 use crate::http::dto_v2::{
-    InfoResponseDtoV2, PrepareDownloadResponseDtoV2, PrepareUploadRequestDtoV2,
+    ChatMessageDtoV2, InfoResponseDtoV2, PrepareDownloadResponseDtoV2, PrepareUploadRequestDtoV2,
     PrepareUploadResponseDtoV2, PrepareUploadResultV2, RegisterDtoV2, RegisterResponseDtoV2,
 };
 use crate::model::discovery::ProtocolType;
@@ -16,6 +16,30 @@ pub struct LsHttpClientV2 {
 }
 
 impl LsHttpClientV2 {
+    /// Sends text to the peer identified by this client's pinned certificate.
+    pub async fn chat(
+        &self,
+        ip: &str,
+        port: u16,
+        payload: ChatMessageDtoV2,
+    ) -> Result<(), ClientError> {
+        let url = TargetUrl {
+            version: ApiVersion::V2,
+            protocol: ProtocolType::Https.as_str(),
+            host: ip.to_string(),
+            port,
+            path: "/chat",
+            params: &[],
+        }
+        .to_string();
+
+        let res = self.client.post(&url).json(&payload).send().await?;
+        if res.status() != StatusCode::OK {
+            return res.into_error().await;
+        }
+        Ok(())
+    }
+
     /// Creates a new HTTP client for v2.2 protocol.
     ///
     /// # Arguments

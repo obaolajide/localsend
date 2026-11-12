@@ -50,6 +50,21 @@ pub enum ClientError {
 }
 
 impl LsHttpClient {
+    /// Sends one chat message over HTTPS to a pinned v2 peer.
+    pub async fn chat(
+        &self,
+        ip: &str,
+        port: u16,
+        payload: http::dto_v2::ChatMessageDtoV2,
+    ) -> Result<(), ClientError> {
+        match self {
+            LsHttpClient::V2(client) => client.chat(ip, port, payload).await,
+            LsHttpClient::V3(_) => Err(ClientError::Other(anyhow::anyhow!(
+                "chat is not supported by protocol v3"
+            ))),
+        }
+    }
+
     /// Creates a client for the given protocol version.
     ///
     /// `expected_fingerprint` pins the peer to the certificate with that

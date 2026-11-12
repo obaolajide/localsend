@@ -24,7 +24,12 @@ apply_standard_settings(${BINARY_NAME})
 # winrt_ext.cpp uses C++/WinRT, which needs C++20 for the standard <coroutine>
 # header; under C++17 it falls back to <experimental/coroutine>, which recent
 # MSVC STLs reject with error STL1011.
-target_compile_features(${BINARY_NAME} PRIVATE cxx_std_20)
+if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS "10.0.22000.0")
+  # Older C++/WinRT headers include <experimental/coroutine>, which requires /await.
+  target_compile_options(${BINARY_NAME} PRIVATE /await)
+else()
+  target_compile_features(${BINARY_NAME} PRIVATE cxx_std_20)
+endif()
 
 # Add preprocessor definitions for the build version.
 target_compile_definitions(${BINARY_NAME} PRIVATE "FLUTTER_VERSION=\"${FLUTTER_VERSION}\"")

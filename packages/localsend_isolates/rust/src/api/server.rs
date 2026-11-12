@@ -1,23 +1,23 @@
 use crate::frb_generated::StreamSink;
 use flutter_rust_bridge::frb;
 pub use localsend::http::dto_v2::RegisterDtoV2;
-use localsend::http::server::ServerConfigV2;
-pub use localsend::http::server::TlsConfig;
 use localsend::http::server::common::save::FileUploadTarget;
 use localsend::http::server::internal::{InternalConfig, InternalEvent};
 pub use localsend::http::server::v2::SessionEndReasonV2;
 use localsend::http::server::v2::{PrepareUploadDecisionV2, ServerEventV2};
 use localsend::http::server::web::{
-    WebConfig, WebMode as CoreWebMode, WebDownloadConfig, WebDownloadEvent,
+    WebConfig, WebDownloadConfig, WebDownloadEvent, WebMode as CoreWebMode,
 };
 pub use localsend::http::server::web::{WebI18n, WebPages};
+use localsend::http::server::ServerConfigV2;
+pub use localsend::http::server::TlsConfig;
 use localsend::http::state::ClientInfo;
 use localsend::model::discovery::DeviceType;
 use localsend::model::discovery::ProtocolType;
 use localsend::model::transfer::{FileContent, FileDto};
 use std::collections::HashMap;
 use std::sync::Arc;
-use tokio::sync::{Mutex, mpsc, oneshot};
+use tokio::sync::{mpsc, oneshot, Mutex};
 
 /// Events emitted by the HTTP server that must be handled by the application.
 ///
@@ -73,6 +73,21 @@ pub enum RsServerEvent {
     /// is currently *sending* to it. The application must verify that [ip]
     /// matches the target of the send session before cancelling it.
     CancelReceived { ip: String, session_id: String },
+
+    /// A text chat message was received via `POST /api/localsend/v2/chat`.
+    ///
+    /// Only emitted on TLS. `cert_fingerprint` is the SHA-256 fingerprint
+    /// (uppercase hex) of the sender's client certificate verified during the
+    /// mTLS handshake, so it cannot be spoofed.
+    ChatReceived {
+        ip: String,
+        cert_fingerprint: String,
+        /// Sender-generated message ID, used to ignore duplicates.
+        id: String,
+        /// The sender's ISO 8601 UTC timestamp. Informational only.
+        timestamp: String,
+        content: String,
+    },
 
     /// A web client requests to download the shared files via `POST /api/localsend/v2/prepare-download`.
     ///
@@ -428,6 +443,19 @@ impl RsHttpServer {
                 .add(RsServerEvent::CancelReceived {
                     ip: ip.to_string(),
                     session_id,
+                })
+                .is_ok(),
+            ServerEventV2::ChatReceived {
+                ip,
+                cert_fingerprint,
+                message,
+            } => sink
+                .add(RsServerEvent::ChatReceived {
+                    ip: ip.to_string(),
+                    cert_fingerprint,
+                    id: message.id,
+                    timestamp: message.timestamp,
+                    content: message.content,
                 })
                 .is_ok(),
             ServerEventV2::ListenerFailed { error } => {

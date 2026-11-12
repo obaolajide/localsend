@@ -1,6 +1,7 @@
 export 'package:localsend_isolates/src/isolate/child/server_isolate.dart'
     show
         HttpServerCancelReceivedEvent,
+        HttpServerChatReceivedEvent,
         HttpServerEvent,
         HttpServerFileUploadEvent,
         HttpServerFileUploadProgressEvent,
@@ -19,6 +20,7 @@ export 'package:localsend_isolates/src/isolate/child/sync_provider.dart';
 export 'package:localsend_isolates/src/isolate/child/upload_isolate.dart'
     show
         HttpUploadEvent,
+        HttpChatSentEvent,
         HttpUploadFile,
         HttpUploadFileFailedEvent,
         HttpUploadFileFinishedEvent,

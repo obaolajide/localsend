@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:localsend_app/config/theme.dart';
 import 'package:localsend_app/gen/strings.g.dart';
 import 'package:localsend_app/model/send_mode.dart';
+import 'package:localsend_app/pages/chat/chat_page.dart';
 import 'package:localsend_app/pages/device_details_page.dart';
 import 'package:localsend_app/pages/selected_files_page.dart';
 import 'package:localsend_app/pages/tabs/send_tab_vm.dart';
@@ -50,6 +51,7 @@ class SendTab extends StatelessWidget {
         final sizingInformation = SizingInformation(MediaQuery.sizeOf(context).width);
         final buttonWidth = sizingInformation.isDesktop ? BigButton.desktopWidth : BigButton.mobileWidth;
         final ref = context.ref;
+        final chatDevices = vm.nearbyDevices.where((device) => device.channels.whereType<HttpChannel>().any((channel) => channel.https)).toList();
         return ResponsiveListView(
           padding: EdgeInsets.zero,
           children: [
@@ -167,6 +169,39 @@ class SendTab extends StatelessWidget {
                 ),
               ),
             ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding, vertical: 10),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Chat', style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 6),
+                      if (chatDevices.isEmpty)
+                        Text(
+                          vm.nearbyDevices.isEmpty ? 'Find a nearby device to start a conversation.' : 'Chat requires an encrypted nearby device.',
+                        )
+                      else
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: chatDevices
+                              .map(
+                                (device) => ActionChip(
+                                  avatar: const Icon(Icons.chat_bubble_outline, size: 18),
+                                  label: Text(device.alias),
+                                  onPressed: () async => await context.push(() => ChatPage.forDevice(device: device)),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Row(
               children: [
                 const SizedBox(width: _horizontalPadding),
@@ -225,6 +260,7 @@ class SendTab extends StatelessWidget {
                           isFavorite: favoriteEntry != null,
                           nameOverride: favoriteEntry?.alias,
                           onDetailsTap: () async => await context.push(() => DeviceDetailsPage(device: device)),
+                          onChatTap: () async => await context.push(() => ChatPage.forDevice(device: device)),
                           onTap: () async => await vm.onTapDevice(context, device),
                         ),
                 ),
@@ -555,6 +591,7 @@ class _MultiSendDeviceListTile extends StatelessWidget {
       isFavorite: isFavorite,
       nameOverride: nameOverride,
       onDetailsTap: () async => await context.push(() => DeviceDetailsPage(device: device)),
+      onChatTap: () async => await context.push(() => ChatPage.forDevice(device: device)),
       onTap: () async => await vm.onTapDeviceMultiSend(context, device),
     );
   }

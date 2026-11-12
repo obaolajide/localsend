@@ -56,6 +56,13 @@ add_subdirectory("runner")
 # them to the application.
 include(flutter/generated_plugins.cmake)
 
+# The 19041 SDK's C++/WinRT headers use the coroutine TS. The gal plugin
+# requests C++20, which makes its <experimental/coroutine> include fail.
+if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS "10.0.22000.0")
+  set_target_properties(gal_plugin PROPERTIES CXX_STANDARD 17)
+  target_compile_options(gal_plugin PRIVATE /await)
+endif()
+
 
 # === Installation ===
 # Support files are copied into place next to the executable, so that it can

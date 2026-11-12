@@ -4,8 +4,8 @@ use crate::frb_generated::StreamSink;
 use flutter_rust_bridge::frb;
 pub use localsend::http::client::{ClientError, LsHttpClientVersion};
 pub use localsend::http::dto::{
-    PrepareUploadRequestDto, PrepareUploadResponseDto, PrepareUploadResult,
-    RegisterDto, RegisterResponseDto,
+    PrepareUploadRequestDto, PrepareUploadResponseDto, PrepareUploadResult, RegisterDto,
+    RegisterResponseDto,
 };
 use localsend::model::discovery::ProtocolType;
 use localsend::util::error::ErrorChain;
@@ -41,6 +41,29 @@ pub fn create_client(
 }
 
 impl RsHttpClient {
+    /// Sends text through the pinned HTTPS client.
+    pub async fn send_chat(
+        &self,
+        ip: &str,
+        port: u16,
+        id: String,
+        timestamp: String,
+        content: String,
+    ) -> Result<(), RsHttpClientError> {
+        self.inner
+            .chat(
+                ip,
+                port,
+                localsend::http::dto_v2::ChatMessageDtoV2 {
+                    id,
+                    timestamp,
+                    content,
+                },
+            )
+            .await
+            .map_err(RsHttpClientError::from)
+    }
+
     pub async fn register(
         &self,
         protocol: ProtocolType,

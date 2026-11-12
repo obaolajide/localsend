@@ -56,6 +56,9 @@ abstract class RsHttpClient implements RustOpaqueInterface {
     required RegisterDto payload,
   });
 
+  /// Sends text through the pinned HTTPS client.
+  Future<void> sendChat({required String ip, required int port, required String id, required String timestamp, required String content});
+
   /// Uploads a single file, emitting [RsUploadEvent]s on [sink].
   ///
   /// Failures are emitted as [RsUploadEvent::Failed] instead of being

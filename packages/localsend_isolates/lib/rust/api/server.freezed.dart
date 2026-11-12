@@ -55,7 +55,7 @@ extension RsServerEventPatterns on RsServerEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( RsServerEvent_Register value)?  register,TResult Function( RsServerEvent_PrepareUpload value)?  prepareUpload,TResult Function( RsServerEvent_FileUpload value)?  fileUpload,TResult Function( RsServerEvent_SessionEnd value)?  sessionEnd,TResult Function( RsServerEvent_PrepareUploadAborted value)?  prepareUploadAborted,TResult Function( RsServerEvent_CancelReceived value)?  cancelReceived,TResult Function( RsServerEvent_WebPrepareDownload value)?  webPrepareDownload,TResult Function( RsServerEvent_WebFileDownload value)?  webFileDownload,TResult Function( RsServerEvent_Show value)?  show_,TResult Function( RsServerEvent_ListenerFailed value)?  listenerFailed,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( RsServerEvent_Register value)?  register,TResult Function( RsServerEvent_PrepareUpload value)?  prepareUpload,TResult Function( RsServerEvent_FileUpload value)?  fileUpload,TResult Function( RsServerEvent_SessionEnd value)?  sessionEnd,TResult Function( RsServerEvent_PrepareUploadAborted value)?  prepareUploadAborted,TResult Function( RsServerEvent_CancelReceived value)?  cancelReceived,TResult Function( RsServerEvent_ChatReceived value)?  chatReceived,TResult Function( RsServerEvent_WebPrepareDownload value)?  webPrepareDownload,TResult Function( RsServerEvent_WebFileDownload value)?  webFileDownload,TResult Function( RsServerEvent_Show value)?  show_,TResult Function( RsServerEvent_ListenerFailed value)?  listenerFailed,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case RsServerEvent_Register() when register != null:
@@ -64,7 +64,8 @@ return prepareUpload(_that);case RsServerEvent_FileUpload() when fileUpload != n
 return fileUpload(_that);case RsServerEvent_SessionEnd() when sessionEnd != null:
 return sessionEnd(_that);case RsServerEvent_PrepareUploadAborted() when prepareUploadAborted != null:
 return prepareUploadAborted(_that);case RsServerEvent_CancelReceived() when cancelReceived != null:
-return cancelReceived(_that);case RsServerEvent_WebPrepareDownload() when webPrepareDownload != null:
+return cancelReceived(_that);case RsServerEvent_ChatReceived() when chatReceived != null:
+return chatReceived(_that);case RsServerEvent_WebPrepareDownload() when webPrepareDownload != null:
 return webPrepareDownload(_that);case RsServerEvent_WebFileDownload() when webFileDownload != null:
 return webFileDownload(_that);case RsServerEvent_Show() when show_ != null:
 return show_(_that);case RsServerEvent_ListenerFailed() when listenerFailed != null:
@@ -86,7 +87,7 @@ return listenerFailed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( RsServerEvent_Register value)  register,required TResult Function( RsServerEvent_PrepareUpload value)  prepareUpload,required TResult Function( RsServerEvent_FileUpload value)  fileUpload,required TResult Function( RsServerEvent_SessionEnd value)  sessionEnd,required TResult Function( RsServerEvent_PrepareUploadAborted value)  prepareUploadAborted,required TResult Function( RsServerEvent_CancelReceived value)  cancelReceived,required TResult Function( RsServerEvent_WebPrepareDownload value)  webPrepareDownload,required TResult Function( RsServerEvent_WebFileDownload value)  webFileDownload,required TResult Function( RsServerEvent_Show value)  show_,required TResult Function( RsServerEvent_ListenerFailed value)  listenerFailed,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( RsServerEvent_Register value)  register,required TResult Function( RsServerEvent_PrepareUpload value)  prepareUpload,required TResult Function( RsServerEvent_FileUpload value)  fileUpload,required TResult Function( RsServerEvent_SessionEnd value)  sessionEnd,required TResult Function( RsServerEvent_PrepareUploadAborted value)  prepareUploadAborted,required TResult Function( RsServerEvent_CancelReceived value)  cancelReceived,required TResult Function( RsServerEvent_ChatReceived value)  chatReceived,required TResult Function( RsServerEvent_WebPrepareDownload value)  webPrepareDownload,required TResult Function( RsServerEvent_WebFileDownload value)  webFileDownload,required TResult Function( RsServerEvent_Show value)  show_,required TResult Function( RsServerEvent_ListenerFailed value)  listenerFailed,}){
 final _that = this;
 switch (_that) {
 case RsServerEvent_Register():
@@ -95,7 +96,8 @@ return prepareUpload(_that);case RsServerEvent_FileUpload():
 return fileUpload(_that);case RsServerEvent_SessionEnd():
 return sessionEnd(_that);case RsServerEvent_PrepareUploadAborted():
 return prepareUploadAborted(_that);case RsServerEvent_CancelReceived():
-return cancelReceived(_that);case RsServerEvent_WebPrepareDownload():
+return cancelReceived(_that);case RsServerEvent_ChatReceived():
+return chatReceived(_that);case RsServerEvent_WebPrepareDownload():
 return webPrepareDownload(_that);case RsServerEvent_WebFileDownload():
 return webFileDownload(_that);case RsServerEvent_Show():
 return show_(_that);case RsServerEvent_ListenerFailed():
@@ -113,7 +115,7 @@ return listenerFailed(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( RsServerEvent_Register value)?  register,TResult? Function( RsServerEvent_PrepareUpload value)?  prepareUpload,TResult? Function( RsServerEvent_FileUpload value)?  fileUpload,TResult? Function( RsServerEvent_SessionEnd value)?  sessionEnd,TResult? Function( RsServerEvent_PrepareUploadAborted value)?  prepareUploadAborted,TResult? Function( RsServerEvent_CancelReceived value)?  cancelReceived,TResult? Function( RsServerEvent_WebPrepareDownload value)?  webPrepareDownload,TResult? Function( RsServerEvent_WebFileDownload value)?  webFileDownload,TResult? Function( RsServerEvent_Show value)?  show_,TResult? Function( RsServerEvent_ListenerFailed value)?  listenerFailed,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( RsServerEvent_Register value)?  register,TResult? Function( RsServerEvent_PrepareUpload value)?  prepareUpload,TResult? Function( RsServerEvent_FileUpload value)?  fileUpload,TResult? Function( RsServerEvent_SessionEnd value)?  sessionEnd,TResult? Function( RsServerEvent_PrepareUploadAborted value)?  prepareUploadAborted,TResult? Function( RsServerEvent_CancelReceived value)?  cancelReceived,TResult? Function( RsServerEvent_ChatReceived value)?  chatReceived,TResult? Function( RsServerEvent_WebPrepareDownload value)?  webPrepareDownload,TResult? Function( RsServerEvent_WebFileDownload value)?  webFileDownload,TResult? Function( RsServerEvent_Show value)?  show_,TResult? Function( RsServerEvent_ListenerFailed value)?  listenerFailed,}){
 final _that = this;
 switch (_that) {
 case RsServerEvent_Register() when register != null:
@@ -122,7 +124,8 @@ return prepareUpload(_that);case RsServerEvent_FileUpload() when fileUpload != n
 return fileUpload(_that);case RsServerEvent_SessionEnd() when sessionEnd != null:
 return sessionEnd(_that);case RsServerEvent_PrepareUploadAborted() when prepareUploadAborted != null:
 return prepareUploadAborted(_that);case RsServerEvent_CancelReceived() when cancelReceived != null:
-return cancelReceived(_that);case RsServerEvent_WebPrepareDownload() when webPrepareDownload != null:
+return cancelReceived(_that);case RsServerEvent_ChatReceived() when chatReceived != null:
+return chatReceived(_that);case RsServerEvent_WebPrepareDownload() when webPrepareDownload != null:
 return webPrepareDownload(_that);case RsServerEvent_WebFileDownload() when webFileDownload != null:
 return webFileDownload(_that);case RsServerEvent_Show() when show_ != null:
 return show_(_that);case RsServerEvent_ListenerFailed() when listenerFailed != null:
@@ -143,7 +146,7 @@ return listenerFailed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ip,  RegisterDtoV2 info)?  register,TResult Function( String sessionId,  String ip,  RegisterDtoV2 info,  String? certFingerprint,  Map<String, FileDto> files)?  prepareUpload,TResult Function( String sessionId,  String fileId,  FileDto file)?  fileUpload,TResult Function( String sessionId,  SessionEndReasonV2 reason)?  sessionEnd,TResult Function( String sessionId)?  prepareUploadAborted,TResult Function( String ip,  String sessionId)?  cancelReceived,TResult Function( String ip,  String sessionId,  String? userAgent)?  webPrepareDownload,TResult Function( String sessionId,  String fileId,  FileDto file)?  webFileDownload,TResult Function( List<String> args)?  show_,TResult Function( String error)?  listenerFailed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String ip,  RegisterDtoV2 info)?  register,TResult Function( String sessionId,  String ip,  RegisterDtoV2 info,  String? certFingerprint,  Map<String, FileDto> files)?  prepareUpload,TResult Function( String sessionId,  String fileId,  FileDto file)?  fileUpload,TResult Function( String sessionId,  SessionEndReasonV2 reason)?  sessionEnd,TResult Function( String sessionId)?  prepareUploadAborted,TResult Function( String ip,  String sessionId)?  cancelReceived,TResult Function( String ip,  String certFingerprint,  String id,  String timestamp,  String content)?  chatReceived,TResult Function( String ip,  String sessionId,  String? userAgent)?  webPrepareDownload,TResult Function( String sessionId,  String fileId,  FileDto file)?  webFileDownload,TResult Function( List<String> args)?  show_,TResult Function( String error)?  listenerFailed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case RsServerEvent_Register() when register != null:
 return register(_that.ip,_that.info);case RsServerEvent_PrepareUpload() when prepareUpload != null:
@@ -151,7 +154,8 @@ return prepareUpload(_that.sessionId,_that.ip,_that.info,_that.certFingerprint,_
 return fileUpload(_that.sessionId,_that.fileId,_that.file);case RsServerEvent_SessionEnd() when sessionEnd != null:
 return sessionEnd(_that.sessionId,_that.reason);case RsServerEvent_PrepareUploadAborted() when prepareUploadAborted != null:
 return prepareUploadAborted(_that.sessionId);case RsServerEvent_CancelReceived() when cancelReceived != null:
-return cancelReceived(_that.ip,_that.sessionId);case RsServerEvent_WebPrepareDownload() when webPrepareDownload != null:
+return cancelReceived(_that.ip,_that.sessionId);case RsServerEvent_ChatReceived() when chatReceived != null:
+return chatReceived(_that.ip,_that.certFingerprint,_that.id,_that.timestamp,_that.content);case RsServerEvent_WebPrepareDownload() when webPrepareDownload != null:
 return webPrepareDownload(_that.ip,_that.sessionId,_that.userAgent);case RsServerEvent_WebFileDownload() when webFileDownload != null:
 return webFileDownload(_that.sessionId,_that.fileId,_that.file);case RsServerEvent_Show() when show_ != null:
 return show_(_that.args);case RsServerEvent_ListenerFailed() when listenerFailed != null:
@@ -173,7 +177,7 @@ return listenerFailed(_that.error);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ip,  RegisterDtoV2 info)  register,required TResult Function( String sessionId,  String ip,  RegisterDtoV2 info,  String? certFingerprint,  Map<String, FileDto> files)  prepareUpload,required TResult Function( String sessionId,  String fileId,  FileDto file)  fileUpload,required TResult Function( String sessionId,  SessionEndReasonV2 reason)  sessionEnd,required TResult Function( String sessionId)  prepareUploadAborted,required TResult Function( String ip,  String sessionId)  cancelReceived,required TResult Function( String ip,  String sessionId,  String? userAgent)  webPrepareDownload,required TResult Function( String sessionId,  String fileId,  FileDto file)  webFileDownload,required TResult Function( List<String> args)  show_,required TResult Function( String error)  listenerFailed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String ip,  RegisterDtoV2 info)  register,required TResult Function( String sessionId,  String ip,  RegisterDtoV2 info,  String? certFingerprint,  Map<String, FileDto> files)  prepareUpload,required TResult Function( String sessionId,  String fileId,  FileDto file)  fileUpload,required TResult Function( String sessionId,  SessionEndReasonV2 reason)  sessionEnd,required TResult Function( String sessionId)  prepareUploadAborted,required TResult Function( String ip,  String sessionId)  cancelReceived,required TResult Function( String ip,  String certFingerprint,  String id,  String timestamp,  String content)  chatReceived,required TResult Function( String ip,  String sessionId,  String? userAgent)  webPrepareDownload,required TResult Function( String sessionId,  String fileId,  FileDto file)  webFileDownload,required TResult Function( List<String> args)  show_,required TResult Function( String error)  listenerFailed,}) {final _that = this;
 switch (_that) {
 case RsServerEvent_Register():
 return register(_that.ip,_that.info);case RsServerEvent_PrepareUpload():
@@ -181,7 +185,8 @@ return prepareUpload(_that.sessionId,_that.ip,_that.info,_that.certFingerprint,_
 return fileUpload(_that.sessionId,_that.fileId,_that.file);case RsServerEvent_SessionEnd():
 return sessionEnd(_that.sessionId,_that.reason);case RsServerEvent_PrepareUploadAborted():
 return prepareUploadAborted(_that.sessionId);case RsServerEvent_CancelReceived():
-return cancelReceived(_that.ip,_that.sessionId);case RsServerEvent_WebPrepareDownload():
+return cancelReceived(_that.ip,_that.sessionId);case RsServerEvent_ChatReceived():
+return chatReceived(_that.ip,_that.certFingerprint,_that.id,_that.timestamp,_that.content);case RsServerEvent_WebPrepareDownload():
 return webPrepareDownload(_that.ip,_that.sessionId,_that.userAgent);case RsServerEvent_WebFileDownload():
 return webFileDownload(_that.sessionId,_that.fileId,_that.file);case RsServerEvent_Show():
 return show_(_that.args);case RsServerEvent_ListenerFailed():
@@ -199,7 +204,7 @@ return listenerFailed(_that.error);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ip,  RegisterDtoV2 info)?  register,TResult? Function( String sessionId,  String ip,  RegisterDtoV2 info,  String? certFingerprint,  Map<String, FileDto> files)?  prepareUpload,TResult? Function( String sessionId,  String fileId,  FileDto file)?  fileUpload,TResult? Function( String sessionId,  SessionEndReasonV2 reason)?  sessionEnd,TResult? Function( String sessionId)?  prepareUploadAborted,TResult? Function( String ip,  String sessionId)?  cancelReceived,TResult? Function( String ip,  String sessionId,  String? userAgent)?  webPrepareDownload,TResult? Function( String sessionId,  String fileId,  FileDto file)?  webFileDownload,TResult? Function( List<String> args)?  show_,TResult? Function( String error)?  listenerFailed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String ip,  RegisterDtoV2 info)?  register,TResult? Function( String sessionId,  String ip,  RegisterDtoV2 info,  String? certFingerprint,  Map<String, FileDto> files)?  prepareUpload,TResult? Function( String sessionId,  String fileId,  FileDto file)?  fileUpload,TResult? Function( String sessionId,  SessionEndReasonV2 reason)?  sessionEnd,TResult? Function( String sessionId)?  prepareUploadAborted,TResult? Function( String ip,  String sessionId)?  cancelReceived,TResult? Function( String ip,  String certFingerprint,  String id,  String timestamp,  String content)?  chatReceived,TResult? Function( String ip,  String sessionId,  String? userAgent)?  webPrepareDownload,TResult? Function( String sessionId,  String fileId,  FileDto file)?  webFileDownload,TResult? Function( List<String> args)?  show_,TResult? Function( String error)?  listenerFailed,}) {final _that = this;
 switch (_that) {
 case RsServerEvent_Register() when register != null:
 return register(_that.ip,_that.info);case RsServerEvent_PrepareUpload() when prepareUpload != null:
@@ -207,7 +212,8 @@ return prepareUpload(_that.sessionId,_that.ip,_that.info,_that.certFingerprint,_
 return fileUpload(_that.sessionId,_that.fileId,_that.file);case RsServerEvent_SessionEnd() when sessionEnd != null:
 return sessionEnd(_that.sessionId,_that.reason);case RsServerEvent_PrepareUploadAborted() when prepareUploadAborted != null:
 return prepareUploadAborted(_that.sessionId);case RsServerEvent_CancelReceived() when cancelReceived != null:
-return cancelReceived(_that.ip,_that.sessionId);case RsServerEvent_WebPrepareDownload() when webPrepareDownload != null:
+return cancelReceived(_that.ip,_that.sessionId);case RsServerEvent_ChatReceived() when chatReceived != null:
+return chatReceived(_that.ip,_that.certFingerprint,_that.id,_that.timestamp,_that.content);case RsServerEvent_WebPrepareDownload() when webPrepareDownload != null:
 return webPrepareDownload(_that.ip,_that.sessionId,_that.userAgent);case RsServerEvent_WebFileDownload() when webFileDownload != null:
 return webFileDownload(_that.sessionId,_that.fileId,_that.file);case RsServerEvent_Show() when show_ != null:
 return show_(_that.args);case RsServerEvent_ListenerFailed() when listenerFailed != null:
@@ -224,7 +230,7 @@ return listenerFailed(_that.error);case _:
 
 class RsServerEvent_Register extends RsServerEvent {
   const RsServerEvent_Register({required this.ip, required this.info}): super._();
-  
+
 
  final  String ip;
  final  RegisterDtoV2 info;
@@ -637,6 +643,82 @@ class _$RsServerEvent_CancelReceivedCopyWithImpl<$Res>
   return _then(RsServerEvent_CancelReceived(
 ip: null == ip ? _self.ip : ip // ignore: cast_nullable_to_non_nullable
 as String,sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class RsServerEvent_ChatReceived extends RsServerEvent {
+  const RsServerEvent_ChatReceived({required this.ip, required this.certFingerprint, required this.id, required this.timestamp, required this.content}): super._();
+
+
+ final  String ip;
+ final  String certFingerprint;
+/// Sender-generated message ID, used to ignore duplicates.
+ final  String id;
+/// The sender's ISO 8601 UTC timestamp. Informational only.
+ final  String timestamp;
+ final  String content;
+
+/// Create a copy of RsServerEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RsServerEvent_ChatReceivedCopyWith<RsServerEvent_ChatReceived> get copyWith => _$RsServerEvent_ChatReceivedCopyWithImpl<RsServerEvent_ChatReceived>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RsServerEvent_ChatReceived&&(identical(other.ip, ip) || other.ip == ip)&&(identical(other.certFingerprint, certFingerprint) || other.certFingerprint == certFingerprint)&&(identical(other.id, id) || other.id == id)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.content, content) || other.content == content));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,ip,certFingerprint,id,timestamp,content);
+
+@override
+String toString() {
+  return 'RsServerEvent.chatReceived(ip: $ip, certFingerprint: $certFingerprint, id: $id, timestamp: $timestamp, content: $content)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RsServerEvent_ChatReceivedCopyWith<$Res> implements $RsServerEventCopyWith<$Res> {
+  factory $RsServerEvent_ChatReceivedCopyWith(RsServerEvent_ChatReceived value, $Res Function(RsServerEvent_ChatReceived) _then) = _$RsServerEvent_ChatReceivedCopyWithImpl;
+@useResult
+$Res call({
+ String ip, String certFingerprint, String id, String timestamp, String content
+});
+
+
+
+
+}
+/// @nodoc
+class _$RsServerEvent_ChatReceivedCopyWithImpl<$Res>
+    implements $RsServerEvent_ChatReceivedCopyWith<$Res> {
+  _$RsServerEvent_ChatReceivedCopyWithImpl(this._self, this._then);
+
+  final RsServerEvent_ChatReceived _self;
+  final $Res Function(RsServerEvent_ChatReceived) _then;
+
+/// Create a copy of RsServerEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? ip = null,Object? certFingerprint = null,Object? id = null,Object? timestamp = null,Object? content = null,}) {
+  return _then(RsServerEvent_ChatReceived(
+ip: null == ip ? _self.ip : ip // ignore: cast_nullable_to_non_nullable
+as String,certFingerprint: null == certFingerprint ? _self.certFingerprint : certFingerprint // ignore: cast_nullable_to_non_nullable
+as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
+as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

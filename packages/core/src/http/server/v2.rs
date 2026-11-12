@@ -1,6 +1,6 @@
 use crate::http::dto_v2::{
-    InfoResponseDtoV2, PrepareUploadRequestDtoV2, PrepareUploadResponseDtoV2, RegisterDtoV2,
-    RegisterResponseDtoV2,
+    ChatMessageDtoV2, InfoResponseDtoV2, PrepareUploadRequestDtoV2, PrepareUploadResponseDtoV2,
+    RegisterDtoV2, RegisterResponseDtoV2,
 };
 use crate::http::server::common::collect_to_json::CollectToJson;
 use crate::http::server::common::error::AppError;
@@ -15,10 +15,12 @@ use crate::http::server::PeerIp;
 use crate::http::server::{common, AppState, RequestClientInfo, V2State};
 use crate::model::discovery::PROTOCOL_VERSION_V2;
 use crate::model::transfer::FileDto;
+use http_body_util::{BodyExt, Limited};
 use hyper::body::Incoming;
 use hyper::{Request, Response, StatusCode};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
+use tokio::sync::mpsc::error::TrySendError;
 use tokio::sync::oneshot;
 use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
@@ -118,6 +120,21 @@ pub enum ServerEventV2 {
 
         /// The session ID as known by the remote device.
         session_id: String,
+    },
+
+    /// A text chat message was received via `POST /api/localsend/v2/chat`.
+    ///
+    /// Only emitted on TLS: the sender is identified by the client certificate
+    /// of the mTLS handshake, so `cert_fingerprint` cannot be spoofed.
+    ChatReceived {
+        /// The IP address of the sender.
+        ip: PeerIp,
+
+        /// The SHA-256 fingerprint (uppercase hex) of the sender's client
+        /// certificate verified during the mTLS handshake.
+        cert_fingerprint: String,
+
+        message: ChatMessageDtoV2,
     },
 
     /// The listening socket failed permanently, e.g. because the OS
@@ -523,6 +540,77 @@ pub(crate) async fn cancel(
                 .await;
         }
     }
+
+    Ok(Response::new(empty_body()))
+}
+
+/// Maximum size of a chat request body.
+const MAX_CHAT_BODY_BYTES: usize = 16 * 1024;
+
+/// Maximum length of a chat message text.
+const MAX_CHAT_CONTENT_BYTES: usize = 4096;
+
+/// Maximum length of the message ID and timestamp strings.
+const MAX_CHAT_ID_BYTES: usize = 64;
+
+/// `POST /api/localsend/v2/chat`
+///
+/// Receives a text chat message. Chat is only available on TLS because the
+/// sender is identified by the client certificate of the mTLS handshake.
+pub(crate) async fn chat(
+    body: Incoming,
+    state: AppState,
+    client_info: RequestClientInfo,
+) -> Result<Response<BoxedBody>, AppError> {
+    let v2 = require_v2(&state)?;
+
+    let Some(cert_fingerprint) = client_info.cert_fingerprint() else {
+        return Err(AppError::Message(
+            StatusCode::FORBIDDEN,
+            "Chat requires an encrypted connection".to_string(),
+        ));
+    };
+
+    // Unlike the other endpoints, the body is size-limited: chat messages are
+    // tiny, and any device on the network may send one.
+    let bytes = Limited::new(body, MAX_CHAT_BODY_BYTES)
+        .collect()
+        .await
+        .map_err(|_| {
+            AppError::Message(
+                StatusCode::PAYLOAD_TOO_LARGE,
+                "Chat message too large".to_string(),
+            )
+        })?
+        .to_bytes();
+    let message = serde_json::from_slice::<ChatMessageDtoV2>(&bytes)
+        .map_err(|_| AppError::BadRequest("Invalid JSON body".to_string()))?;
+
+    if message.id.is_empty()
+        || message.id.len() > MAX_CHAT_ID_BYTES
+        || message.timestamp.len() > MAX_CHAT_ID_BYTES
+        || message.content.is_empty()
+        || message.content.len() > MAX_CHAT_CONTENT_BYTES
+    {
+        return Err(AppError::BadRequest("Invalid chat message".to_string()));
+    }
+
+    // Not awaited, so a slow application cannot block this request handler
+    // (see `register`). A full channel answers 429 and the sender keeps the
+    // message as unsent. A 200 therefore means the application got the message.
+    v2.event_tx
+        .try_send(ServerEventV2::ChatReceived {
+            ip: client_info.ip,
+            cert_fingerprint,
+            message,
+        })
+        .map_err(|err| match err {
+            TrySendError::Full(_) => AppError::Message(
+                StatusCode::TOO_MANY_REQUESTS,
+                "Too many pending events".to_string(),
+            ),
+            TrySendError::Closed(_) => AppError::Status(StatusCode::INTERNAL_SERVER_ERROR),
+        })?;
 
     Ok(Response::new(empty_body()))
 }

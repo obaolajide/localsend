@@ -5,6 +5,7 @@ import 'package:localsend_app/gen/strings.g.dart';
 import 'package:localsend_app/model/cross_file.dart';
 import 'package:localsend_app/model/state/server/server_state.dart';
 import 'package:localsend_app/model/state/server/web_share_state.dart';
+import 'package:localsend_app/provider/chat_provider.dart';
 import 'package:localsend_app/provider/network/server/controller/receive_controller.dart';
 import 'package:localsend_app/provider/network/server/controller/send_controller.dart';
 import 'package:localsend_app/provider/network/server/server_utils.dart';
@@ -342,6 +343,8 @@ class ServerService extends Notifier<ServerState?> {
       case HttpServerRegisterEvent():
         // ignore: discarded_futures
         _receiveController.onRegister(event);
+      case HttpServerChatReceivedEvent():
+        ref.notifier(chatProvider).onReceived(event);
       case HttpServerPrepareUploadEvent():
         // ignore: discarded_futures
         _receiveController.onPrepareUpload(event);
